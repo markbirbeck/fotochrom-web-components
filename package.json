@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint .",
-    "preversion": "npm run lint"
+    "preversion": "npm run lint",
+    "start": "polyserve",
+    "test": "wct"
   },
   "engines": {
     "node": "6.x"
