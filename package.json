@@ -1,0 +1,19 @@
+{
+  "name": "fotochrom-polymer-elements",
+  "version": "0.1.0",
+  "description": "A collection of Fotochrom web components using Polymer.",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint .",
+    "preversion": "npm run lint"
+  },
+  "engines": {
+    "node": "6.x"
+  },
+  "author": "Mark Birbeck <mark.birbeck@gmail.com> (http://markbirbeck.com/)",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^3.11.1",
+    "eslint-config-google": "^0.7.1"
+  }
+}
