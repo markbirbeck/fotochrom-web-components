@@ -13,7 +13,11 @@
   "author": "Mark Birbeck <mark.birbeck@gmail.com> (http://markbirbeck.com/)",
   "license": "MIT",
   "devDependencies": {
+    "bower": "^1.8.0",
     "eslint": "^3.11.1",
-    "eslint-config-google": "^0.7.1"
+    "eslint-config-google": "^0.7.1",
+    "polylint": "^2.10.1",
+    "polyserve": "^0.15.0",
+    "web-component-tester": "^5.0.0"
   }
 }
