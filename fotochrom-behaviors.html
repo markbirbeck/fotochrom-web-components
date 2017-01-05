@@ -1,0 +1,118 @@
+<link rel="import" href="fotochrom-import.html">
+<script>
+
+  /**
+   * Define behaviours:
+   */
+
+  const _fcBaseBehavior = {
+    properties: {
+      data: {
+        type: Object,
+        observer: '_refresh'
+      },
+      chartConstructor: Object
+    },
+
+    _refresh: function() {
+      this._chart.refresh(this.$.value, this.data);
+    }
+  }; 
+
+  const _fcCoreBehavior = {
+    ready: function() {
+
+      /**
+       * Create the chart:
+       *
+       * NOTE: This is a bit convoluted because we want to pass the parameters
+       * separately, rather than as an array, and so need to use
+       * Function.prototype.apply().
+       */
+
+      this._chart = new (Function.prototype.bind.apply(this.chartConstructor, [null].concat(this.params)));
+    }
+  }; 
+
+  const _fcScatterPreInitBehavior = {
+    properties: {
+      headers: String,
+      params: Array
+    },
+
+    ready: function() {
+      this.params = this.headers
+        .split(',')
+        .map(s => s.trim())
+        ;
+    }
+  }; 
+
+  const _fcChartScatterPreInitBehavior = {
+    ready: function() {
+      this.chartConstructor = fotochrom.chartScatter;
+    }
+  }; 
+
+  const _fcPlotScatterPreInitBehavior = {
+    ready: function() {
+      this.chartConstructor = fotochrom.plotScatter;
+    }
+  }; 
+
+  const _fcChartTimeSeriesPreInitBehavior = {
+    ready: function() {
+      this.chartConstructor = fotochrom.chartTimeSeries;
+    }
+  }; 
+
+  const _fcPlotTimeSeriesPreInitBehavior = {
+    ready: function() {
+      this.chartConstructor = fotochrom.plotTimeSeries;
+    }
+  }; 
+
+  const _fcTimeSeriesPostInitBehavior = {
+    properties: {
+      timeFormat: {
+        type: String,
+        value: '%Y-%m-%d'
+      }
+    },
+
+    ready: function() {
+      this._chart
+        .setNormaliseXTimeFormat(this.timeFormat)
+        .setNormaliseY(function(d) { return +d.value; });
+    }
+  };
+
+  /**
+   * Make reference to the behaviours, combining as necessary:
+   */
+
+  window.FotochromBehaviors = window.FotochromBehaviors || {};
+  window.FotochromBehaviors.BaseBehavior = _fcBaseBehavior;
+  window.FotochromBehaviors.PlotTimeSeriesBehavior = [
+    _fcBaseBehavior,
+    _fcPlotTimeSeriesPreInitBehavior,
+    _fcCoreBehavior,
+    _fcTimeSeriesPostInitBehavior
+  ];
+  window.FotochromBehaviors.ChartTimeSeriesBehavior = [
+    _fcBaseBehavior,
+    _fcChartTimeSeriesPreInitBehavior,
+    _fcCoreBehavior,
+    _fcTimeSeriesPostInitBehavior
+  ];
+  window.FotochromBehaviors.PlotScatterBehavior = [
+    _fcBaseBehavior,
+    _fcScatterPreInitBehavior, _fcPlotScatterPreInitBehavior,
+    _fcCoreBehavior
+  ];
+  window.FotochromBehaviors.ChartScatterBehavior = [
+    _fcBaseBehavior,
+    _fcScatterPreInitBehavior, _fcChartScatterPreInitBehavior,
+    _fcCoreBehavior
+  ];
+</script>

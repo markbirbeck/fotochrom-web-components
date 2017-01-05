@@ -1,0 +1,61 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="fotochrom-behaviors.html">
+
+<!--
+An element providing a scatter chart.
+
+Example:
+
+    <fotochrom-chart-scatter></fotochrom-chart-scatter>
+
+@demo demo/fotochrom-chart-scatter.html
+@hero hero.svg
+-->
+
+<dom-module id="fotochrom-chart-scatter">
+  <template>
+    <style>
+      :host {
+        display: inline-block;
+      }
+      :host .container,
+      :host .value {
+        height: 100%;
+        width: 100%;
+      }
+
+      :host ::content svg {
+        font: 10px sans-serif;
+      }
+
+      :host ::content .axis path, :host ::content .axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+      }
+
+      :host ::content .domain-axis text {
+        fill: white;
+      }
+
+      :host ::content .dot {
+        stroke: #000;
+      }
+    </style>
+    <span class='container'>
+      <content>
+        <span id='value'></span>
+      </content>
+    </span>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'fotochrom-chart-scatter',
+
+      behaviors: [FotochromBehaviors.ChartScatterBehavior]
+    });
+  </script>
+</dom-module>
