@@ -1,17 +1,17 @@
 {
-  "name": "seed-element",
-  "version": "1.0.7",
+  "name": "fotochrom-polymer-elements",
+  "version": "0.2.0",
   "authors": [
-    "Anonymous <anonymous@example.com>"
+    "Mark Birbeck <mark.birbeck@gmail.com> (http://markbirbeck.com/)"
   ],
-  "description": "An element providing a solution to no problem in particular.",
+  "description": "A collection of Fotochrom web components using Polymer.",
   "keywords": [
     "web-component",
     "polymer",
     "seed"
   ],
-  "main": "seed-element.html",
-  "license": "http://polymer.github.io/LICENSE.txt",
+  "main": "fotochrom-elements.html",
+  "license": "MIT",
   "homepage": "https://github.com/<USERNAME>/seed-element/",
   "ignore": [
     "/.*",
