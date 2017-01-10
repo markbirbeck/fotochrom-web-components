@@ -21,5 +21,8 @@
     "polylint": "^2.10.1",
     "polyserve": "^0.15.0",
     "web-component-tester": "^5.0.0"
+  },
+  "dependencies": {
+    "npm-polymer-elements": "0.0.1"
   }
 }
