@@ -1,0 +1,44 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="fotochrom-behaviors.html">
+
+<!--
+An element providing a dot for use in scatter charts.
+
+Example:
+
+    <fotochrom-dot y="10" x="252" r="7.5" style="fill: red;"></fotochrom-dot>
+
+@demo demo/fotochrom-chart.html
+@hero hero.svg
+-->
+
+<dom-module id="fotochrom-dot">
+  <template>
+    <svg x$="[[x]]" y$="[[y]]" style="overflow: visible;">
+      <circle r$="[[r]]" fill$="[[fill]]" stroke$="[[stroke]]"><title>[[label]]</title></circle>
+    </svg>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'fotochrom-dot',
+
+      behaviors: [FotochromBehaviors.RootElementBehavior],
+
+      properties: {
+        r: {
+          value: 3.5
+        },
+        x: Number,
+        y: Number,
+        fill: {
+          value: 'red'
+        },
+        stroke: {
+          value: 'black'
+        }
+      }
+    });
+  </script>
+</dom-module>

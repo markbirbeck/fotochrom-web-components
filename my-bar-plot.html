@@ -1,0 +1,26 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="fotochrom-bar.html">
+
+<!--
+An element providing a base for charts.
+
+Example:
+
+    <fotochrom-chart></fotochrom-chart>
+
+@demo demo/fotochrom-chart.html
+@hero hero.svg
+-->
+
+<dom-module id="my-bar-plot">
+  <template>
+    <fotochrom-bar y="0" width="40" text="4 Apples"></fotochrom-bar>
+    <fotochrom-bar y="20" width="60" text="6 Grapes"></fotochrom-bar>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'my-bar-plot'
+    });
+  </script>
+</dom-module>

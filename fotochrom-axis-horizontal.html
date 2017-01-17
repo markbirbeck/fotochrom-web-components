@@ -1,0 +1,32 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="fotochrom-line.html">
+<link rel="import" href="fotochrom-axis-x-label.html">
+
+<!--
+An element providing a horizontal axis for charts.
+
+Example:
+
+    <fotochrom-axis-horizontal></fotochrom-axis-horizontal>
+
+@demo demo/fotochrom-chart.html
+@hero hero.svg
+-->
+
+<dom-module id="fotochrom-axis-horizontal">
+  <template>
+    <fotochrom-line x="0" y="160" length="760"></fotochrom-line>
+    <template is="dom-repeat" items$="[[data.buckets]]" as="item">
+      <fotochrom-axis-x-label y="169" x$="[[_X(item.key)]]" label$="[[item.key_as_string]]"></fotochrom-axis-x-label>
+    </template>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'fotochrom-axis-horizontal',
+
+      behaviors: [FotochromBehaviors.ScaleBehavior]
+    });
+  </script>
+</dom-module>
+

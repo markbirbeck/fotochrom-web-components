@@ -1,12 +1,12 @@
 {
-  "name": "fotochrom-polymer-elements",
+  "name": "fotochrom-web-components",
   "version": "0.2.1",
-  "description": "A collection of Fotochrom web components using Polymer.",
+  "description": "A collection of charting web components using Polymer.",
   "main": "index.js",
   "scripts": {
     "lint": "eslint . && polylint",
     "preversion": "npm run lint",
-    "start": "polyserve",
+    "start": "polyserve -c node_modules/npm-polymer-elements/ -n fotochrom-web-components",
     "test": "wct"
   },
   "engines": {
@@ -15,7 +15,6 @@
   "author": "Mark Birbeck <mark.birbeck@gmail.com> (http://markbirbeck.com/)",
   "license": "MIT",
   "devDependencies": {
-    "bower": "^1.8.0",
     "eslint": "^3.11.1",
     "eslint-config-google": "^0.7.1",
     "polylint": "^2.10.1",

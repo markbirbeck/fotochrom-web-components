@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+  <head></head>
+  <body>
+    <template id="fc-bar">
+      <svg>
+        <g class="bar">
+          <rect width="40" height="19"></rect>
+          <text x="45" y="9.5" dy=".35em">4 apples</text>
+        </g>
+      </svg>
+    </template>
+
+    <template id="fc-chart">
+      <style>
+        p { color: blue; }
+      </style>
+      <p>I'm in Shadow DOM. My markup was stamped from a &lt;template&gt;.</p>
+      <svg width="420" height="150" aria-labelledby="title desc" role="img">
+        <title id="title">A bar chart showing information</title>
+        <desc id="desc">4 apples; 8 bananas; 15 kiwis; 16 oranges; 230 lemons</desc>
+        <foreignObject>
+          <fc-bar></fc-bar>
+        </foreignObject>
+        <g class="bar">
+          <rect width="80" height="19" y="20"></rect>
+          <text x="85" y="28" dy=".35em">8 bananas</text>
+        </g>
+        <g class="bar">
+          <rect width="150" height="19" y="40"></rect>
+          <text x="150" y="48" dy=".35em">15 kiwis</text>
+        </g>
+        <g class="bar">
+          <rect width="160" height="19" y="60"></rect>
+          <text x="161" y="68" dy=".35em">16 oranges</text>
+        </g>
+        <g class="bar">
+          <rect width="2300" height="19" y="80"></rect>
+          <text x="2305" y="88" dy=".35em">230 lemons</text>
+        </g>
+      </svg>
+      <p>I'm also in Shadow DOM. My markup was stamped from a &lt;template&gt;.</p>
+    </template>
+
+    <script>
+      class MyHTMLElement extends HTMLElement {
+        constructor(templateId) {
+          super(); // always call super() first in the ctor.
+          let shadowRoot = this.attachShadow({mode: 'open'});
+          const t = document.querySelector('#' + templateId);
+          const instance = t.content.cloneNode(true);
+          shadowRoot.appendChild(instance);
+        }
+      };
+      customElements.define('fc-bar', class extends MyHTMLElement {
+        constructor() {
+          super('fc-bar'); // always call super() first in the ctor.
+        }
+      });
+      customElements.define('fc-chart', class extends MyHTMLElement {
+        constructor() {
+          super('fc-chart'); // always call super() first in the ctor.
+        }
+      });
+    </script>
+
+    <fc-chart>
+    </fc-chart>
+  </body>
+</html>

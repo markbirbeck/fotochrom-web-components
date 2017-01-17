@@ -1,0 +1,452 @@
+<!doctype html>
+<html>
+  <head></head>
+  <body>
+    <h1>What We're Aiming For</h1>
+
+    <svg aria-labelledby="title desc" role="img" style="overflow: visible;">
+      <title id="title">A bar chart showing information</title>
+      <desc id="desc">4 apples; 8 bananas; 15 kiwis; 16 oranges; 230 lemons</desc>
+      <svg>
+        <svg y="0">
+          <g class="bar">
+            <rect width="40" height="19"></rect>
+            <text x="45" y="9.5" dy=".35em">4 apples</text>
+          </g>
+        </svg>
+        <svg y="20">
+          <g class="bar">
+            <rect width="80" height="19"></rect>
+            <text x="85" y="9.5" dy=".35em">8 bananas</text>
+          </g>
+        </svg>
+      </svg>
+      <svg>
+        <svg y="10">
+          <circle r="3.5" cx="42"></circle>
+        </svg>
+        <svg y="30">
+          <circle r="3.5" cx="82"></circle>
+        </svg>
+      </svg>
+    </svg>
+
+    <h1>Web Component Versions</h1>
+
+    <section>
+      <h2>Entire Chart Embedded</h2>
+      <template id="fc-chart-1">
+        <svg aria-labelledby="title desc" role="img" style="overflow: visible;">
+          <title id="title">A bar chart showing information</title>
+          <desc id="desc">4 apples; 8 bananas; 15 kiwis; 16 oranges; 230 lemons</desc>
+          <svg>
+            <svg y="0">
+              <g class="bar">
+                <rect width="40" height="19"></rect>
+                <text x="45" y="9.5" dy=".35em">4 apples</text>
+              </g>
+            </svg>
+            <svg y="20">
+              <g class="bar">
+                <rect width="80" height="19"></rect>
+                <text x="85" y="9.5" dy=".35em">8 bananas</text>
+              </g>
+            </svg>
+          </svg>
+          <svg>
+            <svg y="10">
+              <circle r="3.5" cx="42"></circle>
+            </svg>
+            <svg y="30">
+              <circle r="3.5" cx="82"></circle>
+            </svg>
+          </svg>
+        </svg>
+      </template>
+      <fc-chart-1></fc-chart-1>
+
+      <script>
+        class FcHTMLElement extends HTMLElement {
+          constructor(templateId) {
+            super();
+
+            console.log('In constructor for FcHTMLElement:', templateId);
+            this._templateId = templateId;
+
+            // select the target node
+            var target = this;
+             
+            // create an observer instance
+            var observer = new MutationObserver(function(mutations) {
+              mutations.forEach(function(mutation) {
+                console.log(mutation.type);
+              });    
+            });
+             
+            // configuration of the observer:
+            var config = { attributes: true, childList: true, characterData: true };
+             
+            // pass in the target node, as well as the observer options
+            observer.observe(target, config);
+             
+            // later, you can stop observing
+            // observer.disconnect();
+          }
+
+          adoptedCallback() {
+            console.log('In adoptedCallback for FcHTMLElement:', this._templateId);
+          }
+
+          attachedCallback() {
+            console.log('In attachedCallback for FcHTMLElement:', this._templateId);
+          }
+
+          connectedCallback() {
+            console.log('In connectedCallback for FcHTMLElement:', this._templateId);
+
+            /**
+             * First get the template we'll insert:
+             */
+
+            const t = document.querySelector('#' + this._templateId);
+            const instance = document.importNode(t.content, true);
+
+            /**
+             * Then establish where to insert it:
+             */
+
+            this.attachShadow({mode: 'open'});
+
+            /**
+             * Now append the template:
+             */
+
+            this.shadowRoot.appendChild(instance);
+          }
+        };
+
+        /**
+         * Create the <fc-chart> component:
+         */
+
+        customElements.define('fc-chart-1', class extends FcHTMLElement {
+          constructor() {
+            super('fc-chart-1');
+          }
+        });
+
+      </script>
+    </section>
+
+    <section>
+      <h2>Chart Contains A Single Plot</h2>
+      <p>This seems to work ok, when there is only one item in the foreignObject.</p>
+      <template id="fc-chart-2">
+        <svg aria-labelledby="title desc" role="img" style="overflow: visible;">
+          <title id="title">A bar chart showing information</title>
+          <desc id="desc">4 apples; 8 bananas; 15 kiwis; 16 oranges; 230 lemons</desc>
+          <foreignObject>
+            <slot></slot>
+          </foreignObject>
+          <svg style="overflow: visible;">
+            <svg y="10" style="overflow: visible;">
+              <circle r="3.5" cx="42"></circle>
+            </svg>
+            <svg y="30" style="overflow: visible;">
+              <circle r="3.5" cx="82"></circle>
+            </svg>
+          </svg>
+        </svg>
+      </template>
+      <template id="fc-bar-plot-1">
+        <svg y="0" style="overflow: visible;">
+          <svg y="0" style="overflow: visible;">
+            <g class="bar">
+              <rect width="40" height="19"></rect>
+              <text x="45" y="9.5" dy=".35em">4 apples</text>
+            </g>
+          </svg>
+          <svg y="20" style="overflow: visible;">
+            <g class="bar">
+              <rect width="80" height="19"></rect>
+              <text x="85" y="9.5" dy=".35em">8 bananas</text>
+            </g>
+          </svg>
+        </svg>
+      </template>
+      <fc-chart-2>
+        <fc-bar-plot-1></fc-bar-plot-1>
+      </fc-chart-2>
+
+      <script>
+        customElements.define('fc-bar-plot-1', class extends FcHTMLElement {
+          constructor() {
+            super('fc-bar-plot-1');
+          }
+        });
+
+        customElements.define('fc-chart-2', class extends FcHTMLElement {
+          constructor() {
+            super('fc-chart-2');
+          }
+        });
+
+      </script>
+    </section>
+
+    <section>
+      <h2>Chart Contains Multiple Plots, Each With Their Own Shadow DOM</h2>
+      <p>This almost works but the positioning is out, probably caused by &lt;foreignObject> elements being in between &lt;svg> elements.</p>
+      <template id="fc-chart-3">
+        <style>
+          :host {
+            overflow: visible;
+          }
+        </style>
+        <svg aria-labelledby="title desc" role="img" style="overflow: visible;">
+          <title id="title">A bar chart showing information</title>
+          <desc id="desc">4 apples; 8 bananas; 15 kiwis; 16 oranges; 230 lemons</desc>
+          <foreignObject>
+            <slot></slot>
+          </foreignObject>
+        </svg>
+      </template>
+      <template id="fc-bar-plot-2">
+        <style>
+          :host {
+            border: 2px solid blue;
+            position: absolute;
+            top: 0;
+            left: 0;
+            overflow: visible;
+          }
+        </style>
+        <svg y="0" style="overflow: visible;">
+          <svg y="0" style="overflow: visible;">
+            <g class="bar">
+              <rect width="40" height="19"></rect>
+              <text x="45" y="9.5" dy=".35em">4 apples</text>
+            </g>
+          </svg>
+          <svg y="20" style="overflow: visible;">
+            <g class="bar">
+              <rect width="80" height="19"></rect>
+              <text x="85" y="9.5" dy=".35em">8 bananas</text>
+            </g>
+          </svg>
+        </svg>
+      </template>
+      <template id="fc-scatter-plot-1">
+        <style>
+          :host {
+            border: 2px solid purple;
+            position: absolute;
+            top: 0;
+            left: 0;
+            overflow: visible;
+          }
+        </style>
+        <svg y="0" style="overflow: visible;">
+          <svg y="10" style="overflow: visible;">
+            <circle r="3.5" cx="42"></circle>
+          </svg>
+          <svg y="30" style="overflow: visible;">
+            <circle r="3.5" cx="82"></circle>
+          </svg>
+        </svg>
+      </template>
+
+      <script>
+        customElements.define('fc-bar-plot-2', class extends FcHTMLElement {
+          constructor() {
+            super('fc-bar-plot-2');
+          }
+        });
+
+        customElements.define('fc-scatter-plot-1', class extends FcHTMLElement {
+          constructor() {
+            super('fc-scatter-plot-1');
+          }
+        });
+
+        customElements.define('fc-chart-3', class extends FcHTMLElement {
+          constructor() {
+            super('fc-chart-3');
+          }
+        });
+
+      </script>
+      <fc-chart-3>
+        <fc-bar-plot-2 stylex="border: 1px solid red;"></fc-bar-plot-2>
+        <fc-scatter-plot-1 stylex="border: 1px solid blue;"></fc-scatter-plot-1>
+      </fc-chart-3>
+    </section>
+
+    <section>
+      <h2>Chart Contains Multiple Plots, But Wired To A Root Element</h2>
+      <p>This ...</p>
+      <template id="fc-chart-4">
+        <style>
+          :host {
+            overflow: visible;
+          }
+        </style>
+        <svg aria-labelledby="title desc" role="img" style="overflow: visible;"></svg>
+        <slot></slot>
+      </template>
+      <template id="fc-bar-plot-3">
+        <style>
+          :host {
+            overflow: visible;
+          }
+        </style>
+        <svg y="0" style="overflow: visible;">
+          <svg y="0" style="overflow: visible;">
+            <g class="bar">
+              <rect width="40" height="19"></rect>
+              <text x="45" y="9.5" dy=".35em">4 apples</text>
+            </g>
+          </svg>
+          <svg y="20" style="overflow: visible;">
+            <g class="bar">
+              <rect width="80" height="19"></rect>
+              <text x="85" y="9.5" dy=".35em">8 bananas</text>
+            </g>
+          </svg>
+        </svg>
+      </template>
+      <template id="fc-scatter-plot-2">
+        <style>
+          :host {
+            overflow: visible;
+          }
+        </style>
+        <svg y="0" style="overflow: visible;">
+          <svg y="10" style="overflow: visible;">
+            <circle r="3.5" cx="42"></circle>
+          </svg>
+          <svg y="30" style="overflow: visible;">
+            <circle r="3.5" cx="82"></circle>
+          </svg>
+        </svg>
+      </template>
+
+      <script>
+        class FcVirtualHTMLElement extends HTMLElement {
+          constructor(templateId) {
+            console.log('In constructor for FcVirtualHTMLElement:', templateId);
+            super();
+
+            this._templateId = templateId;
+
+            // select the target node
+            var target = this;
+             
+            // create an observer instance
+            var observer = new MutationObserver(function(mutations) {
+              mutations.forEach(function(mutation) {
+                console.log(mutation.type);
+              });    
+            });
+             
+            // configuration of the observer:
+            var config = { attributes: true, childList: true, characterData: true };
+             
+            // pass in the target node, as well as the observer options
+            observer.observe(target, config);
+             
+            // later, you can stop observing
+            // observer.disconnect();
+          }
+
+          adoptedCallback() {
+            console.log('In adoptedCallback for FcVirtualHTMLElement:', this._templateId);
+          }
+
+          attachedCallback() {
+            console.log('In attachedCallback for FcVirtualHTMLElement:', this._templateId);
+          }
+
+          connectedCallback() {
+            console.log('In connectedCallback for FcVirtualHTMLElement:', this._templateId);
+
+            /**
+             * First get the template we'll insert:
+             */
+
+            const t = document.querySelector('#' + this._templateId);
+            const instance = document.importNode(t.content, true);
+
+            /**
+             * Then establish where to insert it:
+             */
+
+            let root = this.rootElement || this.attachShadow({mode: 'open'});
+
+            /**
+             * Now append the template:
+             */
+
+            root.appendChild(instance);
+          }
+
+          get rootElement () {
+            var root = null;
+            var el = this;
+
+            while (!root) {
+              var parent = el.parentNode;
+
+              if (parent === null) {
+
+                /**
+                 * See if we are enclosed:
+                 */
+
+                parent = el.host;
+
+                /**
+                 * If we've reached the top of the document then throw:
+                 */
+
+                if (!parent) {
+                  console.error('FcVirtualHTMLElement', this, 'must be a descendant of a web component');
+                  throw new Error('FcVirtualHTMLElement must be a descendant of a web component');
+                }
+                el = parent;
+              } else if (parent.nodeName === 'FOTOCHROM-CHART') {
+                root = parent.shadowRoot.querySelector('svg');
+                console.log('Got svg:', root);
+              } else {
+                el = parent;
+              }
+            } 
+            return root;
+          }
+        };
+        customElements.define('fc-bar-plot-3', class extends FcVirtualHTMLElement {
+          constructor() {
+            super('fc-bar-plot-3');
+          }
+        });
+
+        customElements.define('fc-scatter-plot-2', class extends FcVirtualHTMLElement {
+          constructor() {
+            super('fc-scatter-plot-2');
+          }
+        });
+
+        customElements.define('fc-chart-4', class extends FcHTMLElement {
+          constructor() {
+            super('fc-chart-4');
+          }
+        });
+      </script>
+      <fc-chart-4>
+        <fc-bar-plot-3></fc-bar-plot-3>
+        <fc-scatter-plot-2></fc-scatter-plot-2>
+      </fc-chart-4>
+    </section>
+
+  </body>
+</html>

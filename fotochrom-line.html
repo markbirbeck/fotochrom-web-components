@@ -1,0 +1,36 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="fotochrom-behaviors.html">
+
+<!--
+An element providing a line for use in charts.
+
+Example:
+
+    <fotochrom-line y="10" x="252" length="100" stroke="red;"></fotochrom-line>
+
+@demo demo/fotochrom-chart.html
+@hero hero.svg
+-->
+
+<dom-module id="fotochrom-line">
+  <template>
+    <svg x$="[[x]]" y$="[[y]]" style="overflow: visible;">
+      <line x1="0" y1="0" x2$="[[length]]" y2="0" stroke$="[[stroke]]"></line>
+    </svg>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'fotochrom-line',
+
+      behaviors: [FotochromBehaviors.RootElementBehavior],
+
+      properties: {
+        stroke: {
+          value: 'black'
+        }
+      }
+    });
+  </script>
+</dom-module>

@@ -1,0 +1,36 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="fotochrom-behaviors.html">
+
+<!--
+An element providing a label for the x axis for use in charts.
+
+Example:
+
+    <fotochrom-axis-x-label y="10" x="252">June</fotochrom-axis-x-label>
+
+@demo demo/fotochrom-chart.html
+@hero hero.svg
+-->
+
+<dom-module id="fotochrom-axis-x-label">
+  <template>
+    <svg x$="[[x]]" y$="[[y]]" style="overflow: visible;">
+      <text dy=".35em" transform="rotate(45)" style="text-anchor: start;">[[label]]</text>
+    </svg>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'fotochrom-axis-x-label',
+
+      behaviors: [FotochromBehaviors.RootElementBehavior],
+
+      properties: {
+        x: Number,
+        y: Number,
+        label: String
+      }
+    });
+  </script>
+</dom-module>

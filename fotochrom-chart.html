@@ -1,0 +1,58 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+An element providing a base for charts.
+
+The element will contain other layers to drive the chart, such as points, bars,
+axes, legends, scaling, and so on.
+
+Example:
+
+
+    <iron-ajax
+     id="instanceData"
+     auto
+     url="sales.json"
+     handle-as="json"
+     last-response="{{ajaxResponse}}"
+    ></iron-ajax>
+
+    <fotochrom-chart>
+      <fotochrom-axis-horizontal data="[[ajaxResponse]]"></fotochrom-axis-horizontal>
+      <my-scatter-plot data="[[ajaxResponse]]"></my-scatter-plot>
+    </fotochrom-chart>
+
+@demo demo/fotochrom-chart.html
+@hero hero.svg
+-->
+
+<dom-module id="fotochrom-chart">
+  <template>
+    <style>
+      :host {
+        overflow: visible;
+      }
+    </style>
+    <svg id="svg" aria-labelledby="title desc" role="img" style="overflow: visible;" viewBox="0 0 760 120" preserveAspectRatio="none"></svg>
+    <content></content>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'fotochrom-chart',
+      properties: {
+        slidy: {
+          type: Number,
+          value: 100
+        },
+        data: {
+          type: Object,
+          observer: '_refresh'
+        }
+      },
+      _refresh(data) {
+        console.log('Got some of that there data!', data);
+      }
+    });
+  </script>
+</dom-module>

@@ -1,89 +1,119 @@
-<link rel="import" href="fotochrom-import.html">
 <script>
 
   /**
    * Define behaviours:
    */
 
-  const _fcBaseBehavior = {
+  const _fcRootElementBehavior = {
+    get rootElement () {
+      var root = null;
+      var el = this;
+
+      while (!root) {
+        var parent = el.parentNode;
+
+        if (parent === null) {
+
+          /**
+           * See if we are enclosed:
+           */
+
+          parent = el.host;
+
+          /**
+           * If we've reached the root of the chain of documents then throw:
+           */
+
+          if (!parent) {
+            console.error('FcVirtualHTMLElement', this, 'must be a descendant of a web component');
+            throw new Error('FcVirtualHTMLElement must be a descendant of a web component');
+          }
+          el = parent;
+        } else if (parent.nodeName === 'FOTOCHROM-CHART') {
+          root = parent.$.svg;
+        } else if (parent._node) {
+          root = parent._node;
+        } else {
+          el = parent;
+        }
+      } 
+      return root;
+    },
+
+    attached: function() {
+      this._node = this.children[0];
+      Polymer.dom(this.rootElement).appendChild(this._node);
+    }
+  }; 
+
+  const _fcScaleBehavior = {
     properties: {
       data: {
         type: Object,
-        observer: '_refresh'
+        observer: '_dataUpdated'
       },
-      chartConstructor: Object
+      xDomain: {
+        type: Array,
+        value: []
+      },
+      xRange: {
+        type: Array,
+        value: [0, 900]
+      },
+      yDomain: {
+        type: Array,
+        value: []
+      },
+      yRange: {
+        type: Array,
+        value: [150, 0]
+      },
+      zDomain: {
+        type: Array,
+        value: []
+      },
+      zRange: {
+        type: Array,
+        value: [3.5, 20]
+      },
     },
+    scale: function(value, domain, range) {
+      let domainPercent = (Number(value) - domain[0]) / (domain[1] - domain[0]);
 
-    _refresh: function() {
-      this._chart.refresh(this.$.value, this.data);
-    }
-  }; 
-
-  const _fcCoreBehavior = {
-    ready: function() {
-
-      /**
-       * Create the chart:
-       *
-       * NOTE: This is a bit convoluted because we want to pass the parameters
-       * separately, rather than as an array, and so need to use
-       * Function.prototype.apply().
-       */
-
-      this._chart = new (Function.prototype.bind.apply(this.chartConstructor, [null].concat(this.params)));
-    }
-  }; 
-
-  const _fcScatterPreInitBehavior = {
-    properties: {
-      headers: String,
-      params: Array
+      return ((range[1] - range[0]) * domainPercent) + range[0];
     },
-
-    ready: function() {
-      this.params = this.headers
-        .split(',')
-        .map(s => s.trim())
-        ;
-    }
-  }; 
-
-  const _fcChartScatterPreInitBehavior = {
-    ready: function() {
-      this.chartConstructor = fotochrom.chartScatter;
-    }
-  }; 
-
-  const _fcPlotScatterPreInitBehavior = {
-    ready: function() {
-      this.chartConstructor = fotochrom.plotScatter;
-    }
-  }; 
-
-  const _fcChartTimeSeriesPreInitBehavior = {
-    ready: function() {
-      this.chartConstructor = fotochrom.chartTimeSeries;
-    }
-  }; 
-
-  const _fcPlotTimeSeriesPreInitBehavior = {
-    ready: function() {
-      this.chartConstructor = fotochrom.plotTimeSeries;
-    }
-  }; 
-
-  const _fcTimeSeriesPostInitBehavior = {
-    properties: {
-      timeFormat: {
-        type: String,
-        value: '%Y-%m-%d'
-      }
+    _X: function(x) {
+      return this.scale(x, this.xDomain, this.xRange);
     },
+    _Y: function(y) {
+      return this.scale(y, this.yDomain, this.yRange);
+    },
+    _Z: function(z) {
+      return this.scale(z, this.zDomain, this.zRange);
+    },
+    _dataUpdated(data) {
+      let minCallback = (min, cur) => Math.min(min, cur);
+      let maxCallback = (max, cur) => Math.max(max, cur);
+      let list = data.buckets;
 
-    ready: function() {
-      this._chart
-        .setNormaliseXTimeFormat(this.timeFormat)
-        .setNormaliseY(function(d) { return +d.value; });
+      this.xDomain[0] = list
+        .map(el => el.key)
+        .reduce(minCallback, Infinity);
+      this.xDomain[1] = list
+        .map(el => el.key)
+        .reduce(maxCallback, -Infinity);
+      this.yDomain[0] = list
+        .map(el => el.value.value)
+        .reduce(minCallback, Infinity);
+      this.yDomain[1] = list
+        .map(el => el.value.value)
+        .reduce(maxCallback, -Infinity);
+      this.zDomain[0] = list
+        .map(el => el.doc_count)
+        .reduce(minCallback, Infinity);
+      this.zDomain[1] = list
+        .map(el => el.doc_count)
+        .reduce(maxCallback, -Infinity);
     }
   };
 
@@ -92,27 +122,6 @@
    */
 
   window.FotochromBehaviors = window.FotochromBehaviors || {};
-  window.FotochromBehaviors.BaseBehavior = _fcBaseBehavior;
-  window.FotochromBehaviors.PlotTimeSeriesBehavior = [
-    _fcBaseBehavior,
-    _fcPlotTimeSeriesPreInitBehavior,
-    _fcCoreBehavior,
-    _fcTimeSeriesPostInitBehavior
-  ];
-  window.FotochromBehaviors.ChartTimeSeriesBehavior = [
-    _fcBaseBehavior,
-    _fcChartTimeSeriesPreInitBehavior,
-    _fcCoreBehavior,
-    _fcTimeSeriesPostInitBehavior
-  ];
-  window.FotochromBehaviors.PlotScatterBehavior = [
-    _fcBaseBehavior,
-    _fcScatterPreInitBehavior, _fcPlotScatterPreInitBehavior,
-    _fcCoreBehavior
-  ];
-  window.FotochromBehaviors.ChartScatterBehavior = [
-    _fcBaseBehavior,
-    _fcScatterPreInitBehavior, _fcChartScatterPreInitBehavior,
-    _fcCoreBehavior
-  ];
+  window.FotochromBehaviors.RootElementBehavior = _fcRootElementBehavior;
+  window.FotochromBehaviors.ScaleBehavior = _fcScaleBehavior;
 </script>

@@ -1,0 +1,36 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="fotochrom-dot.html">
+<link rel="import" href="fotochrom-behaviors.html">
+
+<!--
+An element providing a custom scatter plot.
+
+Example:
+
+    <fotochrom-chart></fotochrom-chart>
+
+@demo demo/fotochrom-chart.html
+@hero hero.svg
+-->
+
+<dom-module id="my-scatter-plot">
+  <template>
+    <template is="dom-repeat" items$="[[data.buckets]]" as="item">
+      <fotochrom-dot
+       y$="[[_Y(item.value.value)]]"
+       x$="[[_X(item.key)]]"
+       r$="[[_Z(item.doc_count)]]"
+       fill="orange"
+       label$="[[item.doc_count]] items sold for £[[item.value.value]]"
+      ></fotochrom-dot>
+    </template>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'my-scatter-plot',
+
+      behaviors: [FotochromBehaviors.ScaleBehavior]
+    });
+  </script>
+</dom-module>

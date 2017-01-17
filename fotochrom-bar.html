@@ -1,0 +1,44 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="fotochrom-behaviors.html">
+
+<!--
+An element providing a bar for use in bar charts.
+
+Example:
+
+    <fotochrom-bar y="10" x="252" dy="7.5" height="29"></fotochrom-bar
+
+@demo demo/fotochrom-chart.html
+@hero hero.svg
+-->
+
+<dom-module id="fotochrom-bar">
+  <template>
+    <svg x$="[[x]]" y$="[[y]]" style="overflow: visible;">
+      <rect width$="[[width]]" height$="[[height]]"></rect>
+      <text x$="[[_add(width, 5)]]" y="8" dy$="[[dy]]">[[text]]</text>
+    </svg>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'fotochrom-bar',
+
+      behaviors: [FotochromBehaviors.RootElementBehavior],
+
+      _add: function(a, b) {
+        return Number(a) + Number(b);
+      },
+
+      properties: {
+        dy: {
+          value: '.35em'
+        },
+        height: {
+          value: 19
+        }
+      }
+    });
+  </script>
+</dom-module>

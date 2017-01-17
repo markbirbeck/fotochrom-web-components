@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <title>fotochrom-chart Demo</title>
+    <script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
+    <link rel="import" href="../../iron-ajax/iron-ajax.html">
+    <link rel="import" href="../fotochrom-chart.html">
+    <link rel="import" href="../fotochrom-axis-horizontal.html">
+
+    <link rel="import" href="../my-scatter-plot.html">
+  </head>
+  <body unresolved>
+
+    <p>An example of <code>&lt;fotochrom-chart&gt;</code>:</p>
+
+    <template is="dom-bind">
+      <iron-ajax
+       id="instanceData"
+       auto
+       url="sales.json"
+       handle-as="json"
+       last-response="{{ajaxResponse}}"
+      ></iron-ajax>
+
+      <fotochrom-chart>
+        <fotochrom-axis-horizontal data="[[ajaxResponse]]"></fotochrom-axis-horizontal>
+        <my-scatter-plot data="[[ajaxResponse]]"></my-scatter-plot>
+      </fotochrom-chart>
+    </template>
+  </body>
+</html>
