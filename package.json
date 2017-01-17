@@ -4,7 +4,7 @@
   "description": "A collection of charting web components using Polymer.",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint . && polylint",
+    "lint": "eslint .",
     "preversion": "npm run lint",
     "start": "polyserve -c node_modules/npm-polymer-elements/ -n fotochrom-web-components",
     "test": "wct"
@@ -17,7 +17,6 @@
   "devDependencies": {
     "eslint": "^3.11.1",
     "eslint-config-google": "^0.7.1",
-    "polylint": "^2.10.1",
     "polyserve": "^0.15.0",
     "web-component-tester": "^5.0.0"
   },
